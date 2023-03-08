@@ -36,12 +36,3 @@ class _AppState extends State<App> {
   }
 }
 
-class MyLargeTitle extends StatefulWidget {
-  const MyLargeTitle({
-    super.key,
-  });
-
-  @override
-  State<MyLargeTitle> createState() => _MyLargeTitleState();
-}
-
