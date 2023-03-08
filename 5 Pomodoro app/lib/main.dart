@@ -45,32 +45,3 @@ class MyLargeTitle extends StatefulWidget {
   State<MyLargeTitle> createState() => _MyLargeTitleState();
 }
 
-class _MyLargeTitleState extends State<MyLargeTitle> {
-  //상태 변수 선언
-  int count = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    print('initState');
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    print('dispose');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    print('build');
-
-    return Text(
-      'My Large Title',
-      style: TextStyle(
-        fontSize: 30,
-        color: Theme.of(context).textTheme.titleLarge!.color,
-      ),
-    );
-  }
-}
