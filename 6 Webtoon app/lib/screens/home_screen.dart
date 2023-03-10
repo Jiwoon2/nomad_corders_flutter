@@ -52,6 +52,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  //웹툰 목록 보여주는 설정
   ListView makeList(AsyncSnapshot<List<WebtoonModel>> snapshot) {
     return ListView.separated(
       scrollDirection: Axis.horizontal,
@@ -64,7 +65,7 @@ class HomeScreen extends StatelessWidget {
         //인덱스 0,1,2..로 접근
         print(index);
         var webtoon = snapshot.data![index];
-        return Webtoon(
+        return Webtoon( //webtoon_widget의 생성자
           title: webtoon.title,
           thumb: webtoon.thumb,
           id: webtoon.id,

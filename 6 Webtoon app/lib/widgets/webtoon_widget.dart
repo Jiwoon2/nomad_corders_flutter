@@ -46,7 +46,7 @@ class Webtoon extends StatelessWidget {
               );
             },
             pageBuilder: (context, anmation, secondaryAnimation) =>
-                DetailScreen(id: id, title: title, thumb: thumb),
+                DetailScreen(id: id, title: title, thumb: thumb), //detail_screen과 연결
             //fullscreenDialog: true,
           ),
         );
