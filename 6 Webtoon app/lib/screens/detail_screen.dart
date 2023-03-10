@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webtoon/models/webtoon_detail_model.dart';
 import 'package:webtoon/models/webtoon_episode_model.dart';
 import 'package:webtoon/services/api_service.dart';
+import 'package:webtoon/widgets/episode_widget.dart';
 
 class DetailScreen extends StatefulWidget {
   final String title, thumb, id;
@@ -29,12 +30,6 @@ class _DetailScreenState extends State<DetailScreen> {
     //유저가 클릭한 webtoon의 ID를 전달받아야하므로 initState에서 할당
     webtoon = ApiService.getToonById(widget.id);
     episodes = ApiService.getLatestEpisodesById(widget.id);
-  }
-
-  onButtonTap() async {
-    final url = Uri.parse("https://google.com");
-    await launchUrl(url);
-    //await launchUrlString("https://google.com"); //위의 두줄과 같음
   }
 
   @override
@@ -127,50 +122,8 @@ class _DetailScreenState extends State<DetailScreen> {
                       children: [
                         //에피소드 목록
                         for (var episode in snapshot.data!)
-                          Container(
-                            margin: EdgeInsets.only(bottom: 10), //버튼 사이 공간
-                            decoration: BoxDecoration(
-                                //버튼 디자인
-                                color: Colors.white,
-                                //테두리 설정
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Colors.green.shade900,
-                                  width: 1,
-                                ),),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              //한쪽에 text, 한쪽에 icon 표시하기 위해 Row 사용
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      episode.title,
-                                      style: TextStyle(
-                                        color: Colors.green.shade400,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ),
-
-                                  // Text(
-                                  //   episode.title,
-                                  //   style: const TextStyle(
-                                  //     color: Colors.green, //Expanded로 감싸야 shade400 사용가능
-                                  //     fontSize: 16,
-                                  //   ),
-                                  // ),
-                                  Icon(
-                                    Icons.chevron_right_rounded,
-                                    color: Colors.green.shade400,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          //webtoon_id는 DetailScreen의 ID, 즉 사용자가 클릭한 webtoon
+                          Episode(episode: episode, webtoonId: widget.id),
                       ],
                     );
                   }
