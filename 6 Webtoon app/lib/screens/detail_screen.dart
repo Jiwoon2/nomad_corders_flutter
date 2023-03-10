@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webtoon/models/webtoon_detail_model.dart';
@@ -21,8 +22,10 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  late Future<WebtoonDetailModel> webtoon;
-  late Future<List<WebtoonEpisodeModel>> episodes;
+  late Future<WebtoonDetailModel> webtoon; //웹툰 정보
+  late Future<List<WebtoonEpisodeModel>> episodes; //에피소드 정보
+  late SharedPreferences prefs; //저장소
+  bool isLiked = false;
 
   @override
   void initState() {
@@ -30,6 +33,42 @@ class _DetailScreenState extends State<DetailScreen> {
     //유저가 클릭한 webtoon의 ID를 전달받아야하므로 initState에서 할당
     webtoon = ApiService.getToonById(widget.id);
     episodes = ApiService.getLatestEpisodesById(widget.id);
+
+    initPrefs();
+  }
+
+  Future initPrefs() async {
+    prefs = await SharedPreferences.getInstance(); //저장소 액세스 얻기
+    final likedToons =
+        prefs.getStringList('likedToons'); //likedToons라는 String List가 있는지 봄
+    if (likedToons != null) {
+      //좋아요를 누른적이 있다면 해당 웹툰의 id를 갖고 있는지 확인
+      if (likedToons.contains(widget.id) == true) {
+        //widget.id이유- StatefulWidget인 DetailScreen의 ID를 가져오기위해
+        setState(() { //ui refresh
+          isLiked = true;
+        });
+      }
+    } else {
+      //앱을 처음 실행할때 likedToons라는 String list를 만들어줌
+      await prefs.setStringList('likedToons', []); //future이기 때문에 await
+    }
+  }
+
+  onHeartTap() async {
+    final likedToons = prefs.getStringList('likedToons');
+    if (likedToons != null) {
+      if (isLiked) {
+        //이미 있으면 눌렀을때 삭제
+        likedToons.remove(widget.id);
+      } else {
+        likedToons.add(widget.id);
+      }
+      await prefs.setStringList('likedToons', likedToons); //리스트를 저장소에 저장
+      setState(() {
+        isLiked = !isLiked;
+      });
+    }
   }
 
   @override
@@ -41,6 +80,15 @@ class _DetailScreenState extends State<DetailScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         foregroundColor: Colors.green,
+        //하트 아이콘
+        actions: [
+          IconButton(
+            onPressed: onHeartTap,
+            icon: Icon(
+              isLiked ? Icons.favorite : Icons.favorite_outline,
+            ),
+          ),
+        ],
         title: Text(
           widget.title,
           style: TextStyle(
